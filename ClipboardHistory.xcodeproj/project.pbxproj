@@ -32,6 +32,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		725BD7672D0DD1B70081945C /* ClipboardHistory */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFileTypes = {
+				ContentView.swift = sourcecode.swift;
+			};
 			path = ClipboardHistory;
 			sourceTree = "<group>";
 		};
