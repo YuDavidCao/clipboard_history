@@ -14,7 +14,7 @@ struct MenuTestApp: App {
     
     var body: some Scene {
         WindowGroup {
-            
+            SettingView().environmentObject(appDelegate.clipboardMonitor)
         }
     }
 }
