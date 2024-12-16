@@ -9,56 +9,69 @@ import SwiftUI
 import Cocoa
 
 struct SettingView: View {
+    //
+    //    @EnvironmentObject var clipboardMonitor: ClipboardMonitor
     
-    @EnvironmentObject var clipboardMonitor: ClipboardMonitor
+    @StateObject var clipboardMonitor: ClipboardMonitor
+    = ClipboardMonitor()
     
-    
-    @State var select: Int = -1;
+    @State var select: Int = -1
+    @State var showSetting: Bool = false
+    @State private var showingAlert = false
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(clipboardMonitor.history.indices, id: \.self) { index in
-                    let entry = clipboardMonitor.history[index]
-                    Button (
-                        action: {
-                            select = index
-                        }
-                    ) {
-                        VStack(alignment: .leading) {
-                            Text(entry.content)
-                                .font(.headline).frame(
-                                    
-                                    alignment: .leading
-                                )
-                            HStack {
-                                Text(entry.date, style: .time)
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray).frame(
-                                        minWidth: 0,
-                                        maxWidth: .infinity, alignment: .leading
+            VStack (alignment: .leading) {
+                List {
+                    ForEach(clipboardMonitor.history.indices, id: \.self) { index in
+                        let entry = clipboardMonitor.history[index]
+                        Button (
+                            action: {
+                                select = index
+                                showSetting = false
+                            }
+                        ) {
+                            VStack(alignment: .leading) {
+                                Text(entry.content)
+                                    .font(.headline).frame(
+                                        
+                                        alignment: .leading
                                     )
-                                Spacer()
-                                Button (
-                                    action: {
-                                        clipboardMonitor.history.remove(at: index)
-                                        if(index == select) {
-                                            select = -1
+                                HStack {
+                                    Text(entry.date, style: .time)
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray).frame(
+                                            minWidth: 0,
+                                            maxWidth: .infinity, alignment: .leading
+                                        )
+                                    Spacer()
+                                    Button (
+                                        action: {
+                                            clipboardMonitor.history.remove(at: index)
+                                            if(index == select) {
+                                                select = -1
+                                            }
                                         }
+                                    ) {
+                                        Image(systemName: "trash")
+                                            .foregroundColor(.red)
                                     }
-                                ) {
-                                    Image(systemName: "trash")
-                                        .foregroundColor(.red)
                                 }
                             }
-                            
                         }
+                        
                     }
-                    
+                }
+                Divider()
+                HStack {
+                    Text("Setting").padding()
+                    Image(systemName: "gear").padding()
+                }.onTapGesture {
+                    showSetting = true
                 }
             }
             .navigationTitle("Clipboard History")
-            if select >= 0 {
+            if !showSetting && select >= 0 {
                 VStack (alignment: .leading) {
                     ScrollView {
                         Text(clipboardMonitor.history[select].content)
@@ -82,7 +95,38 @@ struct SettingView: View {
                     maxHeight: .infinity,
                     alignment: .topLeading
                 )
+            } else {
+                VStack (alignment: .leading) {
+                    Button (action: {
+                        showingAlert = true
+                    } ) {
+                        HStack {
+                            Text("Clear History")
+                            Image(
+                                systemName: "trash"
+                            ).foregroundStyle(Color.red)
+                        }
+                    }.alert("Clear History", isPresented: $showingAlert) {
+                        Button("OK", role: .none) {
+                            clipboardMonitor.history.removeAll()
+                        }
+                        Button("Cancel", role: .cancel) {
+                            
+                        }
+                    } message: {
+                        Text("This is an alert message.")
+                    }
+                }.frame(minWidth: 0,
+                        maxWidth: .infinity,
+                        minHeight: 0,
+                        maxHeight: .infinity,
+                        alignment: .topLeading).padding()
             }
         }
     }
+}
+
+
+#Preview {
+    SettingView()
 }

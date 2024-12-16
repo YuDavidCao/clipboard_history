@@ -11,7 +11,7 @@ import Cocoa
 struct ContentView: View {
     @EnvironmentObject var clipboardMonitor: ClipboardMonitor
     
-    @State var select: Int = -1;
+    @State var select: Int = -1
     
     var body: some View {
         NavigationView {
@@ -85,3 +85,6 @@ struct ContentView: View {
     }
 }
 
+//#Preview {
+//    ContentView()
+//}
