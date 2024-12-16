@@ -59,7 +59,7 @@ class ClipboardMonitor: ObservableObject {
         }
     }
     
-    func pasteClipboardContent(index: Int) {
+    private func pasteClipboardContent(index: Int) {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString(history[index].content, forType: .string)

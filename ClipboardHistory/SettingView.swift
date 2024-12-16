@@ -9,11 +9,13 @@ import SwiftUI
 import Cocoa
 
 struct SettingView: View {
-    //
-    //    @EnvironmentObject var clipboardMonitor: ClipboardMonitor
     
-    @StateObject var clipboardMonitor: ClipboardMonitor
-    = ClipboardMonitor()
+    @EnvironmentObject var clipboardMonitor: ClipboardMonitor
+    @EnvironmentObject var settingManager: SettingManager
+    
+    //    @StateObject var clipboardMonitor: ClipboardMonitor
+    //    = ClipboardMonitor()
+    //    @StateObject var settingManager: SettingManager = SettingManager()
     
     @State var select: Int = -1
     @State var showSetting: Bool = false
@@ -32,29 +34,50 @@ struct SettingView: View {
                             }
                         ) {
                             VStack(alignment: .leading) {
-                                Text(entry.content)
-                                    .font(.headline).frame(
-                                        
-                                        alignment: .leading
-                                    )
-                                HStack {
-                                    Text(entry.date, style: .time)
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray).frame(
-                                            minWidth: 0,
-                                            maxWidth: .infinity, alignment: .leading
+                                if !settingManager.hideDateTime {
+                                    Text(entry.content)
+                                        .font(.headline).frame(
+                                            alignment: .leading
                                         )
-                                    Spacer()
-                                    Button (
-                                        action: {
-                                            clipboardMonitor.history.remove(at: index)
-                                            if(index == select) {
-                                                select = -1
+                                    HStack {
+                                        Text(entry.date, style: .time)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray).frame(
+                                                minWidth: 0,
+                                                maxWidth: .infinity, alignment: .leading
+                                            )
+                                        Spacer()
+                                        Button (
+                                            action: {
+                                                clipboardMonitor.history.remove(at: index)
+                                                if(index == select) {
+                                                    select = -1
+                                                }
                                             }
+                                        ) {
+                                            Image(systemName: "trash")
+                                                .foregroundColor(.red)
                                         }
-                                    ) {
-                                        Image(systemName: "trash")
-                                            .foregroundColor(.red)
+                                    }
+                                } else {
+                                    HStack {
+                                        Text(entry.content)
+                                            .font(.headline).frame(
+                                                
+                                                alignment: .leading
+                                            )
+                                        Spacer()
+                                        Button (
+                                            action: {
+                                                clipboardMonitor.history.remove(at: index)
+                                                if(index == select) {
+                                                    select = -1
+                                                }
+                                            }
+                                        ) {
+                                            Image(systemName: "trash")
+                                                .foregroundColor(.red)
+                                        }
                                     }
                                 }
                             }
@@ -111,11 +134,16 @@ struct SettingView: View {
                             clipboardMonitor.history.removeAll()
                         }
                         Button("Cancel", role: .cancel) {
-                            
                         }
                     } message: {
                         Text("This is an alert message.")
                     }
+                    Toggle(isOn: $settingManager.hideDateTime) {
+                        Text("Hide date & time for history")
+                    }.toggleStyle(SwitchToggleStyle())
+                        .onChange(of: settingManager.hideDateTime) {
+                            settingManager.onHideDateTimeToggle(newValue: settingManager.hideDateTime)
+                        }
                 }.frame(minWidth: 0,
                         maxWidth: .infinity,
                         minHeight: 0,
