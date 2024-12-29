@@ -13,29 +13,47 @@ struct MenuTestApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
-        WindowGroup {
-            SettingView().environmentObject(appDelegate.clipboardMonitor).environmentObject(appDelegate.settingManager)
+        WindowGroup{
+                EmptyView()
+                    .frame(width: 0, height: 0)
+                    .hidden()
+            }
+            .windowResizability(.contentSize)
         }
-    }
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var statusBarItem: NSStatusItem?
     let popover = NSPopover()
     
-    @StateObject var clipboardMonitor = ClipboardMonitor()
-    @StateObject var settingManager = SettingManager()
+    @StateObject private var clipboardMonitor: ClipboardMonitor;
+    @StateObject private var settingManager: SettingManager;
+    
+    override init() {
+        _clipboardMonitor = StateObject(wrappedValue: ClipboardMonitor())
+        _settingManager = StateObject(wrappedValue: SettingManager())
+    }
+    
+    func getClipboardMonitor() -> ClipboardMonitor {
+        return clipboardMonitor
+    }
+    
+    func getSettingManager() -> SettingManager {
+        return settingManager
+    }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        if let window = NSApplication.shared.windows.first {
+                window.close()
+        }
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        
         if let button = statusBarItem?.button {
             button.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Settings")
             button.action = #selector(togglePopover)
         }
         
         // Configure the popover's content view
-        let contentView = NSHostingView(rootView: ContentView().environmentObject(clipboardMonitor).environmentObject(settingManager))
+        let contentView = NSHostingView(rootView: SettingView().environmentObject(clipboardMonitor).environmentObject(settingManager))
         popover.contentViewController = NSViewController()
         popover.contentViewController?.view = contentView
         popover.behavior = .transient  // Important: Makes popover disappear on outside click

@@ -23,6 +23,10 @@ class ClipboardMonitor: ObservableObject {
         startMonitoring()
     }
     
+    deinit {
+        print("Client deinitialized")
+    }
+    
     private func startMonitoring() {
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.checkClipboard()

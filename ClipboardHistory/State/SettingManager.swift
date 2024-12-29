@@ -13,6 +13,14 @@ class SettingManager: ObservableObject {
         UserDefaults.standard.bool(forKey: hideDateTimeKey)
     }()
     
+    init() {
+        print("Setting initialized")
+    }
+    
+    deinit {
+        print("Setting deinitialized")
+    }
+    
     public func onHideDateTimeToggle(newValue: Bool) {
         UserDefaults.standard.set(newValue, forKey: hideDateTimeKey)
         hideDateTime = newValue
