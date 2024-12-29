@@ -48,7 +48,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusBarItem?.button {
-            button.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Settings")
+            button.image = NSImage(systemSymbolName: "clipboard.fill", accessibilityDescription: "Settings")
             button.action = #selector(togglePopover)
         }
         

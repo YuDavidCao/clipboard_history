@@ -19,69 +19,75 @@ struct SettingView: View {
     
     @State var select: Int = -1
     @State var showSetting: Bool = false
-    @State private var showingAlert = false
+    @State private var showClearHistoryAlert = false
+    @State private var showQuitAlert = false
+    @State private var searchString: String = ""
     
     var body: some View {
         NavigationView {
             VStack (alignment: .leading) {
                 List {
+                    TextField("Search", text: $searchString).textFieldStyle(.roundedBorder)
                     ForEach(clipboardMonitor.history.indices, id: \.self) { index in
                         let entry = clipboardMonitor.history[index]
-                        Button (
-                            action: {
-                                select = index
-                                showSetting = false
-                            }
-                        ) {
-                            VStack(alignment: .leading) {
-                                if !settingManager.hideDateTime {
-                                    Text(entry.content)
-                                        .font(.headline).frame(
-                                            alignment: .leading
-                                        )
-                                    HStack {
-                                        Text(entry.date, style: .time)
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray).frame(
-                                                minWidth: 0,
-                                                maxWidth: .infinity, alignment: .leading
-                                            )
-                                        Spacer()
-                                        Button (
-                                            action: {
-                                                clipboardMonitor.history.remove(at: index)
-                                                if(index == select) {
-                                                    select = -1
-                                                }
-                                            }
-                                        ) {
-                                            Image(systemName: "trash")
-                                                .foregroundColor(.red)
-                                        }
-                                    }
-                                } else {
-                                    HStack {
+                        if searchString == "" || entry.content.contains(searchString) {
+                            Button (
+                                action: {
+                                    select = index
+                                    showSetting = false
+                                }
+                            ) {
+                                VStack(alignment: .leading) {
+                                    if !settingManager.hideDateTime {
                                         Text(entry.content)
                                             .font(.headline).frame(
-                                                
                                                 alignment: .leading
                                             )
-                                        Spacer()
-                                        Button (
-                                            action: {
-                                                clipboardMonitor.history.remove(at: index)
-                                                if(index == select) {
-                                                    select = -1
+                                        HStack {
+                                            Text(entry.date, style: .time)
+                                                .font(.subheadline)
+                                                .foregroundColor(.gray).frame(
+                                                    minWidth: 0,
+                                                    maxWidth: .infinity, alignment: .leading
+                                                )
+                                            Spacer()
+                                            Button (
+                                                action: {
+                                                    clipboardMonitor.history.remove(at: index)
+                                                    if(index == select) {
+                                                        select = -1
+                                                    }
                                                 }
+                                            ) {
+                                                Image(systemName: "trash")
+                                                    .foregroundColor(.red)
                                             }
-                                        ) {
-                                            Image(systemName: "trash")
-                                                .foregroundColor(.red)
+                                        }
+                                    } else {
+                                        HStack {
+                                            Text(entry.content)
+                                                .font(.headline).frame(
+                                                    
+                                                    alignment: .leading
+                                                )
+                                            Spacer()
+                                            Button (
+                                                action: {
+                                                    clipboardMonitor.history.remove(at: index)
+                                                    if(index == select) {
+                                                        select = -1
+                                                    }
+                                                }
+                                            ) {
+                                                Image(systemName: "trash")
+                                                    .foregroundColor(.red)
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+                        
                         
                     }
                 }
@@ -103,14 +109,22 @@ struct SettingView: View {
                     }
                     Spacer()
                     Divider()
+                    if select < 8{
+                        HStack {
+                            Spacer()
+                            Text("Copy command:").font(.caption)
+                            Image(systemName: "command")
+                            Text(String(select + 1))
+                        }.padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 8))
+                    }
                     HStack {
                         Spacer()
                         Text(clipboardMonitor.history[select].date, style: .date) // Display date
                         Text(clipboardMonitor.history[select].date, style: .time) // Display time
                             .padding(
-                                EdgeInsets(top: 8, leading: 4, bottom: 8, trailing: 8)
+                                EdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 8)
                             )
-                    }.font(.subheadline)
+                    }.font(.caption)
                 }.frame(
                     minWidth: 0,
                     maxWidth: .infinity,
@@ -121,22 +135,40 @@ struct SettingView: View {
             } else {
                 VStack (alignment: .leading) {
                     Button (action: {
-                        showingAlert = true
+                        showClearHistoryAlert = true
                     } ) {
                         HStack {
-                            Text("Clear History")
+                            Text("Quit").frame(maxWidth: .infinity)
+                            Image(
+                                systemName: "xmark.circle"
+                            ).foregroundStyle(Color.red)
+                        }
+                    }.alert("Quit", isPresented: $showClearHistoryAlert) {
+                        Button("OK", role: .none) {
+                            NSApplication.shared.terminate(nil)
+                        }
+                        Button("Cancel", role: .cancel) {
+                        }
+                    } message: {
+                        Text("Are you sure you want to quit?")
+                    }
+                    Button (action: {
+                        showClearHistoryAlert = true
+                    } ) {
+                        HStack {
+                            Text("Clear History").frame(maxWidth: .infinity)
                             Image(
                                 systemName: "trash"
                             ).foregroundStyle(Color.red)
                         }
-                    }.alert("Clear History", isPresented: $showingAlert) {
+                    }.alert("Clear History", isPresented: $showClearHistoryAlert) {
                         Button("OK", role: .none) {
                             clipboardMonitor.history.removeAll()
                         }
                         Button("Cancel", role: .cancel) {
                         }
                     } message: {
-                        Text("This is an alert message.")
+                        Text("Are you sure you want to clear history?")
                     }
                     Toggle(isOn: $settingManager.hideDateTime) {
                         Text("Hide date & time for history")
@@ -144,6 +176,15 @@ struct SettingView: View {
                         .onChange(of: settingManager.hideDateTime) {
                             settingManager.onHideDateTimeToggle(newValue: settingManager.hideDateTime)
                         }
+                    Divider()
+                    Text("Copy Hotkey: ").padding(
+                        EdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0)
+                    )
+                    HStack {
+                        Image (systemName: "command")
+//                        Image (systemName: "plus")
+                        Text("<number>")
+                    }
                 }.frame(minWidth: 0,
                         maxWidth: .infinity,
                         minHeight: 0,
