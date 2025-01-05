@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		729C4C832D2A10CF002D4EDB /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 729C4C822D2A10CF002D4EDB /* KeyboardShortcuts */; };
+		729C4C862D2A1328002D4EDB /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = 729C4C852D2A1328002D4EDB /* HotKey */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		725BD7772D0DD1B80081945C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				729C4C862D2A1328002D4EDB /* HotKey in Frameworks */,
+				729C4C832D2A10CF002D4EDB /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +132,8 @@
 			);
 			name = ClipboardHistory;
 			packageProductDependencies = (
+				729C4C822D2A10CF002D4EDB /* KeyboardShortcuts */,
+				729C4C852D2A1328002D4EDB /* HotKey */,
 			);
 			productName = ClipboardHistory;
 			productReference = 725BD7652D0DD1B70081945C /* ClipboardHistory.app */;
@@ -208,6 +217,10 @@
 			);
 			mainGroup = 725BD75C2D0DD1B70081945C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				729C4C812D2A10CF002D4EDB /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+				729C4C842D2A1328002D4EDB /* XCRemoteSwiftPackageReference "HotKey" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 725BD7662D0DD1B70081945C /* Products */;
 			projectDirPath = "";
@@ -566,6 +579,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		729C4C812D2A10CF002D4EDB /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.4;
+			};
+		};
+		729C4C842D2A1328002D4EDB /* XCRemoteSwiftPackageReference "HotKey" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/soffes/HotKey";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		729C4C822D2A10CF002D4EDB /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 729C4C812D2A10CF002D4EDB /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
+		729C4C852D2A1328002D4EDB /* HotKey */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 729C4C842D2A1328002D4EDB /* XCRemoteSwiftPackageReference "HotKey" */;
+			productName = HotKey;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 725BD75D2D0DD1B70081945C /* Project object */;
 }

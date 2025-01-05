@@ -111,9 +111,18 @@ struct SettingView: View {
                     Divider()
                     if select < 8{
                         HStack {
+                            Image(systemName: "document.on.document").onTapGesture {
+                                let pasteboard = NSPasteboard.general
+                                pasteboard.clearContents()
+                                pasteboard.setString(clipboardMonitor.history[select].content, forType: .string)
+                            }.padding(
+                                EdgeInsets(
+                                    top: 2, leading: 2, bottom: 2, trailing: 2
+                                )
+                            )
                             Spacer()
                             Text("Copy command:").font(.caption)
-                            Image(systemName: "command")
+                            Image(systemName: "control")
                             Text(String(select + 1))
                         }.padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 8))
                     }
@@ -134,8 +143,14 @@ struct SettingView: View {
                 )
             } else {
                 VStack (alignment: .leading) {
+                    HStack {
+                        Spacer()
+                        Text("Setting").font(.headline)
+                        Spacer()
+                    }
+                    Divider()
                     Button (action: {
-                        showClearHistoryAlert = true
+                        showQuitAlert = true
                     } ) {
                         HStack {
                             Text("Quit").frame(maxWidth: .infinity)
@@ -143,7 +158,7 @@ struct SettingView: View {
                                 systemName: "xmark.circle"
                             ).foregroundStyle(Color.red)
                         }
-                    }.alert("Quit", isPresented: $showClearHistoryAlert) {
+                    }.alert("Quit", isPresented: $showQuitAlert) {
                         Button("OK", role: .none) {
                             NSApplication.shared.terminate(nil)
                         }
@@ -181,7 +196,7 @@ struct SettingView: View {
                         EdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0)
                     )
                     HStack {
-                        Image (systemName: "command")
+                        Image (systemName: "control")
 //                        Image (systemName: "plus")
                         Text("<number>")
                     }

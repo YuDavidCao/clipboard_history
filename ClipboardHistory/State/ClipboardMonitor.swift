@@ -1,4 +1,4 @@
-//
+
 //  ClipboardMinitor.swift
 //  ClipboardHistory
 //
@@ -41,7 +41,6 @@ class ClipboardMonitor: ObservableObject {
                 DispatchQueue.main.async {
                     if(self.history.isEmpty || self.history[0].content != newEntry.content) {
                         self.history.insert(newEntry, at: 0)
-
                     }
                 }
             }
@@ -56,7 +55,6 @@ class ClipboardMonitor: ObservableObject {
         if flags.contains(.control) && (keyCode >= 18 && keyCode <= 26) {
             if(index < history.count) {
                 DispatchQueue.main.async {
-                    print("Ctrl + \(keyCode) Detected: pasting clipboard content \(self.history[index].content)")
                     self.pasteClipboardContent(index: index)
                 }
             }
