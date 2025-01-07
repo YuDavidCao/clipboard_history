@@ -10,3 +10,6 @@
 # clipboard_history
 
 The app keeps track of textual clipboard history data and allows the user to copy previous clipboard data using ctrl + \<number\>
+
+![demo1](assets/demo1.png)
+![demo2](assets/demo2.png)
